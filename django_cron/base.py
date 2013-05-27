@@ -22,7 +22,7 @@ THE SOFTWARE.
 """
 import cPickle
 from threading import Timer
-from datetime import datetime
+from datetime import datetime, tzinfo
 
 from django.dispatch import dispatcher
 from django.conf import settings
@@ -109,7 +109,13 @@ class CronScheduler(object):
         for job in jobs:
 
             if job.queued:
-                time_delta = datetime.now() - job.last_run
+                tz = job.last_run.tzinfo
+                if tz:
+                    now = datetime.now(tz=tz)
+                else:
+                    now = datetime.now()
+
+                time_delta = now - job.last_run
                 if (time_delta.seconds + 86400*time_delta.days) > job.run_frequency:
                     try:
                         inst = cPickle.loads(str(job.instance))
@@ -123,7 +129,8 @@ class CronScheduler(object):
 
                     try:
                         inst.run(*args, **kwargs)
-                        job.last_run = datetime.now()
+                        from django.utils.timezone import UTC
+                        job.last_run = datetime.now(tz=settings.USE_TZ and UTC() or None)
                         job.save()
 
                     except Exception:

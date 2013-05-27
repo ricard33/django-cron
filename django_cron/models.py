@@ -20,15 +20,17 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
+from django.conf import settings
 from django.db import models
 from datetime import datetime
+from django.utils.timezone import UTC
 
 class Job(models.Model):
     name = models.CharField(max_length=100)
     
     # time between job runs (in seconds) // default: 1 day
     run_frequency = models.PositiveIntegerField(default=86400)
-    last_run = models.DateTimeField(default=datetime.now())
+    last_run = models.DateTimeField(default=datetime.now(tz=settings.USE_TZ and UTC() or None))
     
     instance = models.TextField()
     args = models.TextField()
