@@ -2,13 +2,12 @@
 django-cron
 ===========
 
-.. image:: https://travis-ci.org/Tivix/django-cron.png
-    :target: https://travis-ci.org/Tivix/django-cron
-
-
-.. image:: https://coveralls.io/repos/Tivix/django-cron/badge.png
-    :target: https://coveralls.io/r/Tivix/django-cron?branch=master
-
+**Fork note:** this is a maintenance fork of `Tivix/django-cron
+<https://github.com/Tivix/django-cron>`_ (unmaintained since 2022). The
+``django-5`` branch drops the ``index_together`` usage that Django 5.1 removed
+and is tested on Django 4.2 / 5.1 / 5.2 with Python 3.10--3.13. The
+``FailedRunsNotificationCronJob`` (which pulled in the unmaintained
+``django-common-helpers``) has been removed.
 
 .. image:: https://readthedocs.org/projects/django-cron/badge/?version=latest
     :target: https://readthedocs.org/projects/django-cron/?badge=latest

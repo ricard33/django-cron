@@ -2,9 +2,8 @@ import datetime
 import threading
 from time import sleep
 from datetime import timedelta
-from unittest import skip
+from unittest.mock import patch
 
-from mock import patch
 from freezegun import freeze_time
 
 from django import db
@@ -57,9 +56,6 @@ class TestRunCrons(TransactionTestCase):
     run_on_wkend_cron = 'test_crons.RunOnWeekendCronJob'
     does_not_exist_cron = 'ThisCronObviouslyDoesntExist'
     no_code_cron = 'test_crons.NoCodeCronJob'
-    test_failed_runs_notification_cron = (
-        'django_cron.cron.FailedRunsNotificationCronJob'
-    )
     run_on_month_days = 'test_crons.RunOnMonthDaysCronJob'
     run_and_remove_old_logs = 'test_crons.RunEveryMinuteAndRemoveOldLogs'
 
@@ -306,16 +302,6 @@ class TestRunCrons(TransactionTestCase):
     #     self._call(self.wait_3sec_cron)
     #     t.join(10)
     #     self.assertEqual(CronJobLog.objects.all().count(), logs_count + 1)
-
-    @skip  # TODO check why the test is failing
-    def test_failed_runs_notification(self):
-        CronJobLog.objects.all().delete()
-
-        for i in range(10):
-            self._call(self.error_cron, force=True)
-        self._call(self.test_failed_runs_notification_cron)
-
-        self.assertEqual(CronJobLog.objects.all().count(), 11)
 
     def test_humanize_duration(self):
         test_subjects = (
