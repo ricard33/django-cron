@@ -33,15 +33,25 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-        ),
-        migrations.AlterIndexTogether(
-            name='cronjoblog',
-            index_together=set(
-                [
-                    ('code', 'is_success', 'ran_at_time'),
-                    ('code', 'start_time', 'ran_at_time'),
-                    ('code', 'start_time'),
-                ]
-            ),
+            options={
+                # These were historically created by an ``AlterIndexTogether``
+                # operation (``index_together`` was removed in Django 5.1).
+                # Existing installs keep their database-generated index names
+                # until 0004 renames them to the explicit names below.
+                'indexes': [
+                    models.Index(
+                        fields=['code', 'is_success', 'ran_at_time'],
+                        name='dcron_code_succ_time_idx',
+                    ),
+                    models.Index(
+                        fields=['code', 'start_time', 'ran_at_time'],
+                        name='dcron_code_start_ran_idx',
+                    ),
+                    models.Index(
+                        fields=['code', 'start_time'],
+                        name='dcron_code_start_idx',
+                    ),
+                ],
+            },
         ),
     ]

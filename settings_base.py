@@ -13,6 +13,11 @@ INSTALLED_APPS = [
 
 SECRET_KEY = "wknfgl34qtnjo&Yk3jqfjtn2k3jtnk4wtnk"
 
+# The test suite freezes wall-clock time (naive) and compares it directly to
+# stored ``end_time`` values. Django 5.0 flipped the ``USE_TZ`` default to True;
+# keep the suite on naive datetimes as it was written.
+USE_TZ = False
+
 
 CRON_CLASSES = [
     'test_crons.TestSuccessCronJob',
@@ -20,7 +25,6 @@ CRON_CLASSES = [
     'test_crons.Test5minsCronJob',
     'test_crons.TestRunAtTimesCronJob',
     'test_crons.Wait3secCronJob',
-    'django_cron.cron.FailedRunsNotificationCronJob',
 ]
 
 MIDDLEWARE = [

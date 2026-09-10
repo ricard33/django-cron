@@ -24,13 +24,13 @@ class CronJobLog(models.Model):
         return "%s (%s)" % (self.code, "Success" if self.is_success else "Fail")
 
     class Meta:
-        index_together = [
-            ('code', 'is_success', 'ran_at_time'),
-            ('code', 'start_time', 'ran_at_time'),
-            (
-                'code',
-                'start_time',
-            ),  # useful when finding latest run (order by start_time) of cron
+        # Was `index_together` (removed in Django 5.1). Explicit names so the migration
+        # that renames the old implicit indexes on existing installs is deterministic.
+        indexes = [
+            models.Index(fields=['code', 'is_success', 'ran_at_time'], name='dcron_code_succ_time_idx'),
+            models.Index(fields=['code', 'start_time', 'ran_at_time'], name='dcron_code_start_ran_idx'),
+            # useful when finding latest run (order by start_time) of cron
+            models.Index(fields=['code', 'start_time'], name='dcron_code_start_idx'),
         ]
         app_label = 'django_cron'
 
